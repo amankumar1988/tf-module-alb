@@ -1,6 +1,7 @@
 # Create security group for Public
 
 resource "aws_security_group" "alb_public" {
+  count       = var.INTERNAL ? 0 : 1
   name        = "robot-${var.ENV}-public-alb-sg"
   description = "Allow Public traffic"
   vpc_id      = data.terraform_remote_state.vpc.outputs.VPC_ID
@@ -12,7 +13,6 @@ resource "aws_security_group" "alb_public" {
     protocol         = "tcp"
     cidr_blocks      = ["0.0.0.0/0"]
   }
-
 
   egress {
     from_port        = 0
@@ -29,6 +29,7 @@ resource "aws_security_group" "alb_public" {
 # Create security group private
 
 resource "aws_security_group" "alb_private" {
+  count       = var.INTERNAL ? 1 : 0
   name        = "robot-${var.ENV}-private-alb-sg"
   description = "Allow Private traffic"
   vpc_id      = data.terraform_remote_state.vpc.outputs.VPC_ID
