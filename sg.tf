@@ -50,6 +50,6 @@ resource "aws_security_group" "alb_private" {
   }
 
   tags = {
-    Name = "robot-${var.ENV}-private-ab-sg"
+    Name = "robot-${var.ENV}-private-alb-sg"
   }
 }
