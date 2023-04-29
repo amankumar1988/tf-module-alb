@@ -1,13 +1,13 @@
-# Create security group for Public
-
+# Creates SG for Public ALB
 resource "aws_security_group" "alb_public" {
-  count       = var.INTERNAL ? 0 : 1
-  name        = "robot-${var.ENV}-public-alb-sg"
-  description = "Allow Public traffic"
-  vpc_id      = data.terraform_remote_state.vpc.outputs.VPC_ID
+  count              = var.INTERNAL ? 0 : 1
+
+  name               = "robot-${var.ENV}-public-alb-sg"
+  description        = "Allows Public Traffic"
+  vpc_id             = data.terraform_remote_state.vpc.outputs.VPC_ID
 
   ingress {
-    description      = "Allows HTTP Traffic from Public"
+    description      = "Allows HTTP Traffic From Public"
     from_port        = 80
     to_port          = 80
     protocol         = "tcp"
@@ -26,27 +26,27 @@ resource "aws_security_group" "alb_public" {
   }
 }
 
-# Create security group private
-
+# Creates SG for Private ALB
 resource "aws_security_group" "alb_private" {
-  count       = var.INTERNAL ? 1 : 0
-  name        = "robot-${var.ENV}-private-alb-sg"
-  description = "Allow Private traffic"
-  vpc_id      = data.terraform_remote_state.vpc.outputs.VPC_ID
+  count              = var.INTERNAL ? 1 : 0
+
+  name               = "robot-${var.ENV}-private-alb-sg"
+  description        = "Allows Internal Traffic"
+  vpc_id             = data.terraform_remote_state.vpc.outputs.VPC_ID
 
   ingress {
-    description      = "Allows HTTP Traffic from Internal Traffic only"
+    description      = "Allows HTTP Traffic From Intrenal Network Only"
     from_port        = 80
     to_port          = 80
     protocol         = "tcp"
-    cidr_blocks      = ["0.0.0.0/0"]
+    cidr_blocks      = [data.terraform_remote_state.vpc.outputs.VPC_CIDR]
   }
 
   egress {
     from_port        = 0
     to_port          = 0
     protocol         = "-1"
-    cidr_blocks      = ["data.terraform_remote_state.vpc.outputs.VPC_CIDR"]
+    cidr_blocks      = ["0.0.0.0/0"]
   }
 
   tags = {
