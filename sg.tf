@@ -22,7 +22,7 @@ resource "aws_security_group" "alb_public" {
   }
 
   tags = {
-    Name = "robot-${var.ENV}-public-ab-sg"
+    Name = "robot-${var.ENV}-public-alb-sg"
   }
 }
 
@@ -41,7 +41,6 @@ resource "aws_security_group" "alb_private" {
     protocol         = "tcp"
     cidr_blocks      = ["0.0.0.0/0"]
   }
-
 
   egress {
     from_port        = 0
